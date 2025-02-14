@@ -1,12 +1,9 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView, TokenVerifyView)
 
-from api.views import PostViewSet, CommentViewSet, GroupViewSet
+from api.views import CommentViewSet, FollowViewSet, GroupViewSet, PostViewSet
 
 router_v1 = DefaultRouter()
 
@@ -15,6 +12,7 @@ router_v1.register(
     r'posts/(?P<post_id>\d+)/comments', CommentViewSet, basename='comment'
 )
 router_v1.register('groups', GroupViewSet)
+router_v1.register('follow', FollowViewSet, basename='follow')
 
 jwt_endpoints = [
     path('create/', TokenObtainPairView.as_view(), name='token_create_pair'),
