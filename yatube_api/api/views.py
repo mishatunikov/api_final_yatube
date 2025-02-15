@@ -72,7 +72,6 @@ class FollowViewSet(
 ):
     """Обработка запросов к модели Follow."""
 
-    queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permission_classes = (IsAuthenticated,)
     filter_backends = (SearchFilter,)
@@ -80,26 +79,6 @@ class FollowViewSet(
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-    def create(self, request, *args, **kwargs):
-        following = request.data.get('following')
-
-        if (
-            self.get_user()
-            .user_following.filter(following__username=following)
-            .exists()
-        ):
-            return Response(
-                {'detail': 'Вы уже подписаны на этого пользователя.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if self.get_user().username == following:
-            return Response(
-                {'detail': 'Нельзя оформить подписку на себя.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
         return self.get_user().user_following.all()
